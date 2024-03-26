@@ -53,6 +53,11 @@ jobs:
 
       - name: Unzip artifact for deployment
         run: unzip release.zip
+
+      - name: Set up .env variables
+        run: |
+          echo "export $(grep -v '^#' .env | xargs)" >> $GITHUB_ENV
+          echo "MONGO_URI=${{ secrets.MONGO_URI }}" >> $GITHUB_ENV
       
       - name: Login to Azure
         uses: azure/login@v1
@@ -68,4 +73,3 @@ jobs:
           app-name: 'wksp'
           slot-name: 'Production'
           package: .
-          
