@@ -1,6 +1,12 @@
 import UserService, { LoginUserPayload, RegisterUserPayload } from "../../services/user"
 
-const queries = {}
+const queries = {
+    getCurrentUser: async (parent: any, args: any, context: any) => {
+        const accessToken = context.accessToken as string
+        if (context && accessToken) return UserService.decrpytUserToken(accessToken)     
+    }
+
+}
 
 const mutations = {
     registerNewUser: async (_: any, payload: RegisterUserPayload) => {

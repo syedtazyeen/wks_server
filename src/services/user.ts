@@ -1,6 +1,6 @@
 import { createHmac, randomBytes } from 'node:crypto';
 import JWT from 'jsonwebtoken'
-import { User } from '../mongoose/user.model'
+import { User } from '../mongoose/models/user.model'
 import ServerError from '../utils/ServerError';
 
 export interface RegisterUserPayload {
@@ -51,14 +51,19 @@ class UserService {
         else return false
     }
 
-    // geenerate user token
+    // generate user token
     private static async generateUserToken(payload: UserAuthTokenPayload) {
-        const { email, password } = payload
+        const { email } = payload
         const user = this.getUserCredentialsByEmail(email)
-        if (!user)
-            throw new ServerError(404, "User does not exist")
+        if (!user) throw new ServerError(404, "User does not exist")
         const token = JWT.sign({ id: email, email: email }, JWT_SECRET_KEY)
         return token
+    }
+
+
+    // get data from token
+    public static decrpytUserToken(accessToken: string) {
+        return JWT.verify(accessToken, JWT_SECRET_KEY)
     }
 
 

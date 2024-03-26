@@ -14,7 +14,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const node_crypto_1 = require("node:crypto");
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
-const user_model_1 = require("../mongoose/user.model");
+const user_model_1 = require("../mongoose/models/user.model");
 const ServerError_1 = __importDefault(require("../utils/ServerError"));
 const JWT_SECRET_KEY = '123';
 class UserService {
@@ -45,16 +45,20 @@ class UserService {
         else
             return false;
     }
-    // geenerate user token
+    // generate user token
     static generateUserToken(payload) {
         return __awaiter(this, void 0, void 0, function* () {
-            const { email, password } = payload;
+            const { email } = payload;
             const user = this.getUserCredentialsByEmail(email);
             if (!user)
                 throw new ServerError_1.default(404, "User does not exist");
             const token = jsonwebtoken_1.default.sign({ id: email, email: email }, JWT_SECRET_KEY);
             return token;
         });
+    }
+    // get data from token
+    static decrpytUserToken(accessToken) {
+        return jsonwebtoken_1.default.verify(accessToken, JWT_SECRET_KEY);
     }
     // public function to register / create user in db
     static registerUser(payload) {

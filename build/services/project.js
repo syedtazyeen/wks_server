@@ -12,23 +12,26 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.resolvers = void 0;
-const user_1 = __importDefault(require("../../services/user"));
-const queries = {
-    getCurrentUser: (parent, args, context) => __awaiter(void 0, void 0, void 0, function* () {
-        const accessToken = context.accessToken;
-        if (context && accessToken)
-            return user_1.default.decrpytUserToken(accessToken);
-    })
-};
-const mutations = {
-    registerNewUser: (_, payload) => __awaiter(void 0, void 0, void 0, function* () {
-        const response = yield user_1.default.registerUser(payload);
-        return { accessToken: response.accessToken };
-    }),
-    loginUser: (_, payload) => __awaiter(void 0, void 0, void 0, function* () {
-        const response = yield user_1.default.loginUser(payload);
-        return { accessToken: response.accessToken };
-    })
-};
-exports.resolvers = { queries, mutations };
+const project_model_1 = require("../mongoose/models/project.model");
+const ServerError_1 = __importDefault(require("../utils/ServerError"));
+class ProjectService {
+    // fetch thumnail of trending projects
+    static getTrendingProjectsFromDb() {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                return yield project_model_1.Project.find({}, `projectId 
+                title 
+                subtitle
+                author 
+                tags 
+                isActive
+                totalVisits
+                coverImageUrl`);
+            }
+            catch (error) {
+                throw new ServerError_1.default(error.code, error.message);
+            }
+        });
+    }
+}
+exports.default = ProjectService;

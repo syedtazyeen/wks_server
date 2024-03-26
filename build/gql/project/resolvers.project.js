@@ -13,22 +13,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.resolvers = void 0;
-const user_1 = __importDefault(require("../../services/user"));
+const project_1 = __importDefault(require("../../services/project"));
 const queries = {
-    getCurrentUser: (parent, args, context) => __awaiter(void 0, void 0, void 0, function* () {
-        const accessToken = context.accessToken;
-        if (context && accessToken)
-            return user_1.default.decrpytUserToken(accessToken);
+    getTrendingProjects: () => __awaiter(void 0, void 0, void 0, function* () {
+        return project_1.default.getTrendingProjectsFromDb();
     })
 };
-const mutations = {
-    registerNewUser: (_, payload) => __awaiter(void 0, void 0, void 0, function* () {
-        const response = yield user_1.default.registerUser(payload);
-        return { accessToken: response.accessToken };
-    }),
-    loginUser: (_, payload) => __awaiter(void 0, void 0, void 0, function* () {
-        const response = yield user_1.default.loginUser(payload);
-        return { accessToken: response.accessToken };
-    })
-};
+const mutations = {};
 exports.resolvers = { queries, mutations };

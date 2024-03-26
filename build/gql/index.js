@@ -15,29 +15,34 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const server_1 = require("@apollo/server");
 const user_1 = require("./user");
 const apollo_server_express_1 = require("apollo-server-express");
-const typedef_user_1 = require("./user/typedef.user");
 const ServerError_1 = __importDefault(require("../utils/ServerError"));
+const project_1 = require("./project");
 function createApolloServer() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const typeDefs = (0, apollo_server_express_1.gql) `
-        ${typedef_user_1.typedefs}
+
+        ${user_1.User.typedefs}
+        ${project_1.Project.typedefs}
         
         type Query {
-            hello: String
+           ${user_1.User.queries}
+           ${project_1.Project.queries}
         }
         
         type Mutation {
             ${user_1.User.mutations}
+            ${project_1.Project.mutations}
         }
     `;
             const resolvers = {
-                Query: Object.assign({}, user_1.User.resolvers.queries),
-                Mutation: Object.assign({}, user_1.User.resolvers.mutations)
+                Query: Object.assign(Object.assign({}, user_1.User.resolvers.queries), project_1.Project.resolvers.queries),
+                Mutation: Object.assign(Object.assign({}, user_1.User.resolvers.mutations), project_1.Project.resolvers.mutations)
             };
             const apollo = new server_1.ApolloServer({
                 typeDefs,
-                resolvers
+                resolvers,
+                introspection: true,
             });
             yield apollo.start();
             return apollo;

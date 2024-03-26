@@ -3,21 +3,27 @@ import express from 'express';
 import dotenv from 'dotenv'
 import cors from 'cors'
 import createApolloServer from './gql';
-import connectDb from './mongoose/config'
+import { connectDb } from './mongoose/config'
 
-
-dotenv.config()
 
 async function init() {
     const app = express();
     const PORT = process.env.PORT || 1000
 
+    dotenv.config()
     app.use(cors())
+
     connectDb()
 
     app.use('/gql',
         express.json(),
-        expressMiddleware(await createApolloServer()));
+        expressMiddleware(await createApolloServer(),
+            {
+                context: async ({ req }) => {
+                    { req }
+                }
+            })
+    );
 
 
     app.listen({ port: PORT }, () => {
@@ -27,3 +33,4 @@ async function init() {
 }
 
 init()
+

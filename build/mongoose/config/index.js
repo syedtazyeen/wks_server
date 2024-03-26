@@ -12,11 +12,15 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.connectDb = void 0;
 const mongoose_1 = __importDefault(require("mongoose"));
 const constants_1 = require("../../constants");
 const connectDb = () => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const instance = yield mongoose_1.default.connect(`${process.env.MONGO_URI}/${constants_1.DB_NAME}`);
+        const instance = yield mongoose_1.default.connect(`${process.env.MONGO_URI}/${constants_1.DB_NAME}`, {
+            //serverSelectionTimeoutMS: 5000,
+            maxPoolSize: 10
+        });
         console.log(`\nMongoDb connected\tDb host : ${instance.connection.host}`);
     }
     catch (error) {
@@ -24,4 +28,4 @@ const connectDb = () => __awaiter(void 0, void 0, void 0, function* () {
         process.exit(1);
     }
 });
-exports.default = connectDb;
+exports.connectDb = connectDb;

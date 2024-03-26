@@ -17,15 +17,21 @@ const express_1 = __importDefault(require("express"));
 const dotenv_1 = __importDefault(require("dotenv"));
 const cors_1 = __importDefault(require("cors"));
 const gql_1 = __importDefault(require("./gql"));
-const config_1 = __importDefault(require("./mongoose/config"));
-dotenv_1.default.config();
+const config_1 = require("./mongoose/config");
 function init() {
     return __awaiter(this, void 0, void 0, function* () {
         const app = (0, express_1.default)();
         const PORT = process.env.PORT || 1000;
+        dotenv_1.default.config();
         app.use((0, cors_1.default)());
-        (0, config_1.default)();
-        app.use('/gql', express_1.default.json(), (0, express4_1.expressMiddleware)(yield (0, gql_1.default)()));
+        (0, config_1.connectDb)();
+        app.use('/gql', express_1.default.json(), (0, express4_1.expressMiddleware)(yield (0, gql_1.default)(), {
+            context: (_a) => __awaiter(this, [_a], void 0, function* ({ req }) {
+                {
+                    req;
+                }
+            })
+        }));
         app.listen({ port: PORT }, () => {
             console.log(`\nserver running at http://localhost:${PORT}`);
             console.log(`\tgql server running at http://localhost:${PORT}/gql`);
